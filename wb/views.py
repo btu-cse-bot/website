@@ -7,7 +7,8 @@ dc_auth = "https://discord.com/api/oauth2/authorize?client_id=102473538586517518
 #code M5oroPyTLgWqQFCVXgKjxTX5EESdJI
 @views.route('/')
 def home():
-    return render_template("index.html")
+
+    return render_template("index.html",oauth2 = dc_auth)
 
 @views.route('/commands')
 def commands():
@@ -22,9 +23,12 @@ def oauth2_login_redirect():
     code = request.args.get('code')
     print(code)
     user = exchange_code(code)
-    return {"user": user}
+    return redirect(url_for('views.profile',user=user))
   
-
+@views.route('/me')
+def profile():
+    user = request.args.get('user')
+    return render_template("profile.html",user=user)
 def exchange_code(code:str):
   data = {
     "client_id": "1024735385865175180",
