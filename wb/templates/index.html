@@ -1,4 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Home Page{% endblock %}
 {% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {%if messages%}
+            {%for category,msg in messages%}
+                {%if category=="error"%}
+                    <div class="alert alert-danger" role="alert">
+                        {{msg}}
+                    </div>
+                {%elif category=="success"%}
+                    <div class="alert alert-success" role="alert">
+                        {{msg}}
+                    </div>
+                {%endif%}
+            {%endfor%}
+        {%endif%}
+    {%endwith%}
 {% endblock %}

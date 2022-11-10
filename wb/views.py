@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, redirect, url_for, render_template,request,jsonify
+from flask import Blueprint, Flask, redirect, url_for, render_template,request,jsonify, session,flash
 import requests
 
 views = Blueprint('views', __name__)
@@ -7,9 +7,12 @@ dc_auth = "https://discord.com/api/oauth2/authorize?client_id=102473538586517518
 #code M5oroPyTLgWqQFCVXgKjxTX5EESdJI
 @views.route('/')
 def home():
-
     return render_template("index.html",oauth2 = dc_auth)
-
+@views.route('/logout')
+def logout():
+  session.clear()
+  flash("Çıkış yapıldı","error")
+  return redirect(url_for('views.home'))
 @views.route('/commands')
 def commands():
     return render_template("commands.html")
@@ -23,12 +26,18 @@ def oauth2_login_redirect():
     code = request.args.get('code')
     print(code)
     user = exchange_code(code)
-    return redirect(url_for('views.profile',user=user))
+    session['user'] = user
+    return redirect(url_for('views.profile'))
   
 @views.route('/me')
 def profile():
-    user = request.args.get('user')
+  if "user" in session:
+    user = session['user']
     return render_template("profile.html",user=user)
+  else:
+    flash("You need to login first","error")
+    return redirect(url_for('views.home'))
+  
 def exchange_code(code:str):
   data = {
     "client_id": "1024735385865175180",

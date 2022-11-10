@@ -7,6 +7,6 @@ def create_app():
     from .views import views
 
     app.register_blueprint(views, url_prefix='/')
-    
+    app.secret_key = "secret"
     #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DBNAME
     return app
